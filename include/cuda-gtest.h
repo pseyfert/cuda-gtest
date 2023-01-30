@@ -30,7 +30,16 @@
 
 #include "gtest/gtest.h"
 
+// TODO fails with commas in the arguments
+// TODO ensure not to re-evaluate e if it's a call
+
 #define EXPECT_DEVICE_GOOD(e) EXPECT_FALSE(e) << cudaGetErrorString(e)
 #define ASSERT_DEVICE_GOOD(e) ASSERT_FALSE(e) << cudaGetErrorString(e)
 
+#define EXPECT_DEVICE_BAD(e) EXPECT_FALSE(!e)
+#define ASSERT_DEVICE_BAD(e) ASSERT_FALSE(!e)
+
+// TODO check if the expected error appears on BAD
+
 #define ASSERT_LAUNCH_GOOD(kernel_launch) kernel_launch; ASSERT_DEVICE_GOOD(cudaPeekAtLastError()); ASSERT_DEVICE_GOOD(cudaDeviceSynchronize()); ASSERT_DEVICE_GOOD(cudaPeekAtLastError())
+#define ASSERT_LAUNCH_BAD(kernel_launch) kernel_launch; ASSERT_DEVICE_BAD(!cudaPeekAtLastError() || !cudaDeviceSynchronize() || !cudaPeekAtLastError())
